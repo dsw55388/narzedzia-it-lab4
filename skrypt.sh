@@ -13,6 +13,12 @@ function create_logs {
     echo "$num_files log files created."
 }
 
+function show_help {
+    echo "--date          Show current date"
+    echo "--logs [N]      Create N log files"
+    echo "--help          Show this help message"
+}
+
 case $1 in
     --date)
         show_date
@@ -23,6 +29,9 @@ case $1 in
         else
             create_logs
         fi
+        ;;
+    --help)
+        show_help
         ;;
     *)
         echo "Invalid option"
