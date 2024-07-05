@@ -6,31 +6,50 @@ function show_date {
 
 function create_logs {
     local num_files=${1:-100}
+    local prefix=${2:-log}
     for ((i=1; i<=num_files; i++)); do
-        filename="log${i}.txt"
+        filename="${prefix}${i}.txt"
         echo -e "Filename: $filename\nScript: skrypt.sh\nDate: $(date)" > "$filename"
     done
-    echo "$num_files log files created."
+    echo "$num_files ${prefix} files created."
+}
+
+function init_repo {
+    git clone https://github.com/twoje-repozytorium.git .
+    export PATH=$PATH:$(pwd)
+    echo "Repo cloned and cwd added to path"
 }
 
 function show_help {
-    echo "--date          Show current date"
-    echo "--logs [N]      Create N log files"
-    echo "--help          Show this help message"
+    echo "--date | -h              Show current date"
+    echo "--logs [N] | -l [N]      Create N log files"
+    echo "--error [N] | -e [N]     Create N error log files"
+    echo "--init | -i              Initialize repository"
+    echo "--help | -h              Show this help message"
 }
 
 case $1 in
-    --date)
+    --date|-d)
         show_date
         ;;
-    --logs)
+    --logs|-l)
         if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
-            create_logs "$2"
+            create_logs "$2" "log"
         else
-            create_logs
+            create_logs 100 "log"
         fi
         ;;
-    --help)
+     --error|-e)
+        if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+            create_logs "$2" "error"
+        else
+            create_logs 100 "error"
+        fi
+        ;;
+    --init|-i)
+        init_repo
+        ;;
+    --help|-h)
         show_help
         ;;
     *)
